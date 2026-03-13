@@ -49,7 +49,8 @@ YOUR HELPFUL RESPONSE:
         return response.text();
 
     } catch (error) {
-        console.error('❌ Error generating chat response from Gemini:', error);
-        throw new Error('Failed to generate chat response');
+        console.error('❌ Error generating chat response from Gemini:', error.message);
+        if (error.stack) console.error(error.stack);
+        throw new Error(`Chat generation failed: ${error.message}`);
     }
 };

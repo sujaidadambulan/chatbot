@@ -77,7 +77,8 @@ exports.searchKnowledgeBase = async (clientId, query, topK = parseInt(process.en
         return rankedChunks.slice(0, topK);
 
     } catch (error) {
-        console.error('❌ Error searching knowledge base:', error);
-        throw new Error('Failed to search knowledge base');
+        console.error('❌ Error searching knowledge base:', error.message);
+        if (error.stack) console.error(error.stack);
+        throw new Error(`Knowledge search failed: ${error.message}`);
     }
 };
