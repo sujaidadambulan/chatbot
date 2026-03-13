@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Target API URL from environment, fallback to localhost for safety
-const apiUrl = process.env.VITE_API_URL || 'http://localhost:5000/api';
+const apiUrl = process.env.VITE_API_URL || 'https://chatbot-production-85cf.up.railway.app/api';
 
 console.log(`Building widget using API URL: ${apiUrl}`);
 

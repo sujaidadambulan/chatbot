@@ -20,8 +20,7 @@
     // The build script replaces __API_URL__ with the actual environment variable during Vercel deployment.
     // Falls back to a config-provided URL or localhost.
     const injectedApiUrl = '__API_URL__';
-    const baseApiUrl = window.chatbotConfig.apiUrl || (injectedApiUrl !== '__API_URL__' ? injectedApiUrl : 'http://localhost:5000/api');
-
+    const baseApiUrl = window.chatbotConfig.apiUrl || (injectedApiUrl !== '__API_URL__' ? injectedApiUrl : 'https://chatbot-production-85cf.up.railway.app/api');
     const backendUrl = `${baseApiUrl}/chat`;
     const cssUrl = `${baseApiUrl.replace('/api', '/widget')}/chatbot.css`;
 

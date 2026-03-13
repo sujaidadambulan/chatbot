@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an Axios instance configured for the backend
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+    baseURL: import.meta.env.VITE_API_URL || 'https://chatbot-production-85cf.up.railway.app/api',
 });
 
 // Interceptor to attach the API Key to requests
