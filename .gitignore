@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+admin-dashboard/node_modules/
+widget/node_modules/
+
+# Build outputs
+admin-dashboard/dist/
+widget/dist/
+admin-dashboard/public/chatbot.js
+
+# Environment variables - NEVER commit these!
+.env
+backend/.env
+*.env.local
+*.env.production
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+backend/test-gemini.js
+backend/error.txt
+backend/error_log.txt
+
+# Vite cache
+admin-dashboard/.vite/
