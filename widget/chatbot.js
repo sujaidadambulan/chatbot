@@ -30,15 +30,18 @@
     // 3. Inject CSS inline to avoid cross-origin stylesheet issues
     function injectStyles() {
         const style = document.createElement('style');
+        style.id = 'ai-chatbot-styles'; // added id to easily find and update variables
         style.textContent = `
 :root{--chatbot-primary:#2563eb;--chatbot-primary-hover:#1d4ed8;--chatbot-bg:#ffffff;--chatbot-text:#1f2937;--chatbot-border:#e5e7eb;--chatbot-user-msg:#2563eb;--chatbot-bot-msg:#f3f4f6;--chatbot-shadow:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05);--chatbot-z-index:999999}
 #ai-chatbot-container{position:fixed;bottom:24px;right:24px;z-index:var(--chatbot-z-index);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;display:flex;flex-direction:column;align-items:flex-end}
 #ai-chatbot-launcher{width:56px;height:56px;border-radius:50%;background-color:var(--chatbot-primary);color:white;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--chatbot-shadow);transition:transform 0.2s,background-color 0.2s;padding:0}
 #ai-chatbot-launcher:hover{background-color:var(--chatbot-primary-hover);transform:scale(1.05)}
-#ai-chatbot-window{width:350px;height:500px;max-height:calc(100vh - 100px);background-color:var(--chatbot-bg);border-radius:12px;box-shadow:var(--chatbot-shadow);display:flex;flex-direction:column;overflow:hidden;margin-bottom:16px;border:1px solid var(--chatbot-border);transition:opacity 0.3s,transform 0.3s,visibility 0.3s;transform-origin:bottom right}
+#ai-chatbot-window{width:350px;height:500px;max-height:calc(100vh - 100px);background-color:var(--chatbot-bg);border-radius:12px;box-shadow:var(--chatbot-shadow);display:flex;flex-direction:column;overflow:hidden;margin-bottom:16px;border:1px solid var(--chatbot-border);transition:opacity 0.3s,transform 0.3s,visibility 0.3s;transform-origin:bottom right;position:relative}
 .ai-chatbot-closed #ai-chatbot-window{opacity:0;transform:scale(0.95);visibility:hidden;pointer-events:none}
 .ai-chatbot-open #ai-chatbot-window{opacity:1;transform:scale(1);visibility:visible;pointer-events:auto}
 #ai-chatbot-header{background-color:var(--chatbot-primary);color:white;padding:16px;font-weight:600;font-size:16px;display:flex;justify-content:space-between;align-items:center;border-top-left-radius:12px;border-top-right-radius:12px}
+#ai-chatbot-header-info {display: flex;align-items: center;gap: 12px;}
+#ai-chatbot-logo {max-width: 32px;max-height: 32px;border-radius: 4px;display: none;object-fit: contain;}
 #ai-chatbot-close-btn{background:none;border:none;color:white;font-size:24px;line-height:1;cursor:pointer;padding:0 4px;opacity:0.8}
 #ai-chatbot-close-btn:hover{opacity:1}
 #ai-chatbot-messages{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;background-color:#f9fafb}
@@ -47,6 +50,15 @@
 .ai-chatbot-message.bot.error{background-color:#fee2e2;color:#b91c1c}
 .ai-chatbot-message.user{background-color:var(--chatbot-user-msg);color:white;align-self:flex-end;border-bottom-right-radius:4px}
 #ai-chatbot-input-area{padding:12px;background-color:var(--chatbot-bg);border-top:1px solid var(--chatbot-border);display:flex;gap:8px}
+#ai-chatbot-quick-replies {display: flex;flex-wrap: wrap;gap: 8px;padding: 0 16px 12px 16px;background-color: #f9fafb;}
+.ai-chatbot-quick-reply-btn {background-color: var(--chatbot-bg);color: var(--chatbot-primary);border: 1px solid var(--chatbot-primary);border-radius: 16px;padding: 6px 12px;font-size: 13px;cursor: pointer;transition: all 0.2s;white-space: nowrap;}
+.ai-chatbot-quick-reply-btn:hover {background-color: var(--chatbot-primary);color: white;}
+#ai-chatbot-lead-form {padding: 16px;background-color: var(--chatbot-bg);display: flex;flex-direction: column;gap: 12px;border-top: 1px solid var(--chatbot-border);position: absolute;bottom: 0;left: 0;right: 0;background: white;z-index: 10;border-radius: 0 0 12px 12px;}
+.ai-chatbot-lead-input {padding: 10px 12px;border: 1px solid var(--chatbot-border);border-radius: 8px;font-size: 14px;outline: none;background-color: #fff;color: #000;}
+.ai-chatbot-lead-input:focus {border-color: var(--chatbot-primary);}
+#ai-chatbot-lead-submit {background-color: var(--chatbot-primary);color: white;border: none;border-radius: 8px;padding: 10px;font-size: 14px;font-weight: 500;cursor: pointer;transition: background-color 0.2s;}
+#ai-chatbot-lead-submit:hover {background-color: var(--chatbot-primary-hover);}
+.ai-chatbot-hidden {display: none !important;}
 #ai-chatbot-input{flex:1;padding:10px 12px;border:1px solid var(--chatbot-border);border-radius:20px;font-size:14px;outline:none;transition:border-color 0.2s;background-color:#fff;color:#000}
 #ai-chatbot-input:focus{border-color:var(--chatbot-primary)}
 #ai-chatbot-send-btn{width:40px;height:40px;border-radius:50%;background-color:var(--chatbot-primary);color:white;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:background-color 0.2s}
@@ -86,7 +98,10 @@
         const header = document.createElement('div');
         header.id = 'ai-chatbot-header';
         header.innerHTML = `
-      <span>Support Chat</span>
+      <div id="ai-chatbot-header-info">
+        <img id="ai-chatbot-logo" src="" alt="logo" />
+        <span id="ai-chatbot-header-title">Support Chat</span>
+      </div>
       <button id="ai-chatbot-close-btn">&times;</button>
     `;
 
@@ -99,6 +114,23 @@
         greeting.className = 'ai-chatbot-message bot';
         greeting.innerText = 'Hello! How can I help you today?';
         messagesContainer.appendChild(greeting);
+
+        // Quick Replies Area
+        const quickRepliesContainer = document.createElement('div');
+        quickRepliesContainer.id = 'ai-chatbot-quick-replies';
+        quickRepliesContainer.className = 'ai-chatbot-hidden';
+
+        // Lead Capture Form
+        const leadFormContainer = document.createElement('div');
+        leadFormContainer.id = 'ai-chatbot-lead-form';
+        leadFormContainer.className = 'ai-chatbot-hidden';
+        leadFormContainer.innerHTML = `
+            <div style="font-weight: 600; font-size: 15px; margin-bottom: 4px; color: var(--chatbot-text);">Before we start...</div>
+            <div style="font-size: 13px; color: #6b7280; margin-bottom: 8px;">Please provide your details so we can assist you better.</div>
+            <input type="text" id="ai-chatbot-lead-name" class="ai-chatbot-lead-input" placeholder="Your Name" required />
+            <input type="tel" id="ai-chatbot-lead-phone" class="ai-chatbot-lead-input" placeholder="Your Phone Number" required />
+            <button id="ai-chatbot-lead-submit">Start Chat</button>
+        `;
 
         // Input Area
         const inputArea = document.createElement('div');
@@ -125,6 +157,8 @@
 
         chatWindow.appendChild(header);
         chatWindow.appendChild(messagesContainer);
+        chatWindow.appendChild(quickRepliesContainer);
+        chatWindow.appendChild(leadFormContainer);
         chatWindow.appendChild(inputArea);
 
         container.appendChild(chatWindow);
@@ -138,6 +172,104 @@
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') handleSend();
         });
+
+        document.getElementById('ai-chatbot-lead-submit').onclick = handleLeadSubmit;
+    }
+
+    // 4.5 Fetch Config and Apply
+    let widgetConfig = null;
+    let hasSentMessage = false;
+
+    async function fetchConfig() {
+        try {
+            const res = await fetch(`${baseApiUrl}/chat/config/${clientId}`);
+            const data = await res.json();
+            if (data.success && data.data) {
+                widgetConfig = data.data;
+                applyConfig(widgetConfig);
+            }
+        } catch (error) {
+            console.error('Chatbot Widget: Failed to fetch config', error);
+        }
+    }
+
+    // Helper to generate a slightly darker color for hover states
+    function adjustColor(color, amount) {
+        return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+    }
+
+    function applyConfig(cfg) {
+        // 1. Color
+        if (cfg.primaryColor) {
+            const root = document.querySelector(':root') || document.documentElement;
+            root.style.setProperty('--chatbot-primary', cfg.primaryColor);
+            root.style.setProperty('--chatbot-primary-hover', adjustColor(cfg.primaryColor, -20));
+            root.style.setProperty('--chatbot-user-msg', cfg.primaryColor);
+        }
+
+        // 2. Logo & Name
+        const logoEl = document.getElementById('ai-chatbot-logo');
+        const titleEl = document.getElementById('ai-chatbot-header-title');
+
+        if (cfg.logoUrl) {
+            logoEl.src = cfg.logoUrl;
+            logoEl.style.display = 'block';
+        }
+        if (cfg.companyName) {
+            titleEl.innerText = cfg.companyName;
+        }
+
+        // 3. Quick Replies
+        if (cfg.quickReplies && cfg.quickReplies.length > 0 && !hasSentMessage) {
+            const qrContainer = document.getElementById('ai-chatbot-quick-replies');
+            qrContainer.innerHTML = '';
+            cfg.quickReplies.forEach(reply => {
+                if (!reply.trim()) return;
+                const btn = document.createElement('button');
+                btn.className = 'ai-chatbot-quick-reply-btn';
+                btn.innerText = reply;
+                btn.onclick = () => {
+                    const input = document.getElementById('ai-chatbot-input');
+                    input.value = reply;
+                    handleSend();
+                };
+                qrContainer.appendChild(btn);
+            });
+            qrContainer.classList.remove('ai-chatbot-hidden');
+        }
+
+        // 4. Lead Capture Form
+        if (cfg.leadCaptureEnabled) {
+            const leadContainer = document.getElementById('ai-chatbot-lead-form');
+            leadContainer.classList.remove('ai-chatbot-hidden');
+            // disable regular input
+            document.getElementById('ai-chatbot-input').disabled = true;
+            document.getElementById('ai-chatbot-send-btn').disabled = true;
+        }
+    }
+
+    function handleLeadSubmit() {
+        const name = document.getElementById('ai-chatbot-lead-name').value;
+        const phone = document.getElementById('ai-chatbot-lead-phone').value;
+
+        if (!name || !phone) {
+            alert('Please fill out all fields');
+            return;
+        }
+
+        // Hide form and enable input
+        document.getElementById('ai-chatbot-lead-form').classList.add('ai-chatbot-hidden');
+        document.getElementById('ai-chatbot-input').disabled = false;
+        document.getElementById('ai-chatbot-send-btn').disabled = false;
+
+        // Optionally route to whatsapp if configured
+        if (widgetConfig && widgetConfig.leadCaptureWhatsapp) {
+            const msg = `Hello, my name is ${name}. I am starting a chat from the website.`;
+            const waUrl = `https://wa.me/${widgetConfig.leadCaptureWhatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
+            window.open(waUrl, '_blank');
+        }
+
+        appendMessage('Thanks! How can we help you?', 'bot');
     }
 
     // 5. Logic
@@ -187,6 +319,14 @@
         const message = input.value.trim();
         if (!message) return;
 
+        hasSentMessage = true;
+
+        // Hide quick replies when a message is sent
+        const qrContainer = document.getElementById('ai-chatbot-quick-replies');
+        if (qrContainer) {
+            qrContainer.classList.add('ai-chatbot-hidden');
+        }
+
         // UI Updates
         appendMessage(message, 'user');
         input.value = '';
@@ -224,16 +364,17 @@
         }
     }
 
-    // 6. Initialize
-    // Wait for DOM to be fully loaded
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            injectStyles();
-            createWidget();
-        });
-    } else {
+    // WAIT for DOM to execute setup
+    function init() {
         injectStyles();
         createWidget();
+        fetchConfig();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
     }
 
 })();

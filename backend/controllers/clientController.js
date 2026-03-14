@@ -13,7 +13,7 @@ const Client = require('../models/Client');
  */
 exports.createClient = async (req, res, next) => {
     try {
-        const { clientId, companyName, website } = req.body;
+        const { clientId, companyName, website, primaryColor, logoUrl, quickReplies, leadCaptureEnabled, leadCaptureWhatsapp } = req.body;
 
         if (!clientId || !companyName) {
             return res.status(400).json({ success: false, message: 'clientId and companyName are required' });
@@ -27,7 +27,12 @@ exports.createClient = async (req, res, next) => {
         const newClient = await Client.create({
             clientId,
             companyName,
-            website
+            website,
+            primaryColor,
+            logoUrl,
+            quickReplies,
+            leadCaptureEnabled,
+            leadCaptureWhatsapp
         });
 
         res.status(201).json({ success: true, data: newClient });
@@ -68,10 +73,10 @@ exports.getAllClients = async (req, res, next) => {
  */
 exports.updateClient = async (req, res, next) => {
     try {
-        const { companyName, website, isActive } = req.body;
+        const { companyName, website, isActive, primaryColor, logoUrl, quickReplies, leadCaptureEnabled, leadCaptureWhatsapp } = req.body;
         const updatedClient = await Client.findOneAndUpdate(
             { clientId: req.params.clientId },
-            { companyName, website, isActive },
+            { companyName, website, isActive, primaryColor, logoUrl, quickReplies, leadCaptureEnabled, leadCaptureWhatsapp },
             { new: true, runValidators: true }
         );
 

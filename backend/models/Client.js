@@ -24,6 +24,29 @@ const clientSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
+    primaryColor: {
+        type: String,
+        default: '#2563eb',
+        trim: true,
+    },
+    logoUrl: {
+        type: String,
+        default: '',
+        trim: true,
+    },
+    quickReplies: {
+        type: [String],
+        default: [],
+    },
+    leadCaptureEnabled: {
+        type: Boolean,
+        default: false,
+    },
+    leadCaptureWhatsapp: {
+        type: String,
+        default: '',
+        trim: true,
+    },
     isActive: {
         type: Boolean,
         default: true,

@@ -57,3 +57,37 @@ exports.handleChat = async (req, res, next) => {
         next(error); // Passes to global error handler
     }
 };
+
+/**
+ * Handles GET /api/chat/config/:clientId
+ * Returns widget customization settings
+ */
+exports.getWidgetConfig = async (req, res, next) => {
+    try {
+        const { clientId } = req.params;
+        const client = await Client.findOne({ clientId });
+
+        if (!client) {
+            return res.status(404).json({ success: false, message: 'Client not found' });
+        }
+
+        if (!client.isActive) {
+            return res.status(403).json({ success: false, message: 'Client account is inactive' });
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                primaryColor: client.primaryColor,
+                logoUrl: client.logoUrl,
+                quickReplies: client.quickReplies,
+                leadCaptureEnabled: client.leadCaptureEnabled,
+                leadCaptureWhatsapp: client.leadCaptureWhatsapp,
+                companyName: client.companyName
+            }
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};

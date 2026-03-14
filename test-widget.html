@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,30 +13,37 @@
             padding: 2rem;
             color: #333;
         }
+
         .container {
             max-width: 800px;
             margin: 0 auto;
             background: white;
             padding: 2rem;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        h1 { color: #2563eb; }
+
+        h1 {
+            color: #2563eb;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="container">
         <h1>Acme Corp - Client Website Simulation</h1>
         <p>This page simulates a client's website where the chatbot has been embedded.</p>
         <p>You should see a blue chat bubble launcher in the bottom right corner.</p>
-        <p><i>Note: The backend server (<code>node backend/server.js</code>) must be running, and you must have created <code>client_123</code> for messages to process.</i></p>
+        <p><i>Note: The backend server (<code>node backend/server.js</code>) must be running, and you must have created
+                <code>client_123</code> for messages to process.</i></p>
     </div>
 
     <!-- 1. Configure the Chatbot Widget with this site's Client ID -->
     <script>
         window.chatbotConfig = {
-            clientId: "client_123"
+            clientId: "klaw_001",
+            apiUrl: "http://localhost:5000/api"
         };
     </script>
 
@@ -44,4 +52,5 @@
     <script src="./widget/chatbot.js"></script>
 
 </body>
+
 </html>
